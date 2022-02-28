@@ -77,7 +77,7 @@ func splitStringByFiveLetterWords(text string) []string {
 func readDictionaryToSlice() []string {
 	// Read entire file content, giving us little control but
 	// making it very simple. No need to close the file.
-	content, err := ioutil.ReadFile("dictionary.txt")
+	content, err := ioutil.ReadFile("new-dictionary.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -263,10 +263,10 @@ func printLetterList(ll LetterList) {
 	out.WriteString("[ ")
 	for range ll {
 		fmt.Printf("Pos: %v Match: %s (%v)\n", ll[i].pos, ll[i].match)
-		fmt.Println("includes: ")
-		fmt.Println(ll[i].include)
-		fmt.Println("excludes: ")
-		fmt.Println(ll[i].exclude)
+		//fmt.Println("includes: ")
+		//fmt.Println(ll[i].include)
+		//fmt.Println("excludes: ")
+		//fmt.Println(ll[i].exclude)
 		match = ll[i].match
 		if match != "" {
 			out.WriteString(match + " ")
@@ -284,6 +284,7 @@ func main() {
 	info := countDictionary([]string{})
 	ll := newLetterList()
 	text := info.text
+	answerSet := []int{}
 
 	reader := bufio.NewReader(os.Stdin)
 	word := make(map[int]string)
@@ -357,7 +358,9 @@ func main() {
 		}
 
 		//fmt.Println(text)
-		fmt.Println(ll)
+		//fmt.Println(ll)
+		answerSet = append(answerSet, len(text))
+		fmt.Println(answerSet)
 		printLetterList(ll)
 
 		info = countDictionary(text)

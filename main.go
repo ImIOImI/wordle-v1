@@ -334,7 +334,7 @@ func main() {
 
 			if word[i] == v {
 				output += "\n" + colorGreen + "we should be skipping this Letter" + colorReset
-				fmt.Println(output)
+				fmt.Print(output)
 			} else {
 				var input int
 				fmt.Println(output)

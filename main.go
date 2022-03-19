@@ -310,7 +310,7 @@ func main() {
 		fmt.Println("---------------------")
 
 		fmt.Println(colorBlue, "Make a guess: ", colorReset)
-		fmt.Print("->")
+		fmt.Print("-> ")
 		var guess string
 		fmt.Scan(&guess)
 		// convert CRLF to LF
@@ -334,7 +334,7 @@ func main() {
 
 			if word[i] == v {
 				output += "\n" + colorGreen + "we should be skipping this Letter" + colorReset
-				fmt.Println(output)
+				fmt.Print(output)
 			} else {
 				var input int
 				fmt.Println(output)

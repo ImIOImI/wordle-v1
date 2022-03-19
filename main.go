@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
 	"fmt"
 	"io/ioutil"
@@ -143,10 +142,10 @@ func sortMapByValue(inMap map[string]int) PairList {
 
 func findMatch(textSlice []string, letter string, pos int) []string {
 	var matches []string
-	for _, v := range textSlice {
-		i := strings.Index(v, letter)
-		if i == pos {
-			matches = append(matches, v)
+	for _, word := range textSlice {
+		letters := stringToSlice(word)
+		if letters[pos] == letter {
+			matches = append(matches, word)
 		}
 	}
 	return matches
@@ -154,10 +153,10 @@ func findMatch(textSlice []string, letter string, pos int) []string {
 
 func findInclude(textSlice []string, letter string, pos int) []string {
 	var matches []string
-	for _, v := range textSlice {
-		i := strings.Index(v, letter)
-		if strings.Contains(v, letter) && i != pos {
-			matches = append(matches, v)
+	for _, word := range textSlice {
+		i := strings.Index(word, letter)
+		if strings.Contains(word, letter) && i != pos {
+			matches = append(matches, word)
 		}
 	}
 	return matches
@@ -173,7 +172,7 @@ func findExclude(textSlice []string, letter string) []string {
 	return matches
 }
 
-func printGuess(guessSlice []string, word map[int]string, pos int) {
+func printGuess(guessSlice []string, word map[int]string, pos int) string {
 	var guessBuffer bytes.Buffer
 	var carrotBuffer bytes.Buffer
 	colorReset := "\033[0m"
@@ -203,44 +202,43 @@ func printGuess(guessSlice []string, word map[int]string, pos int) {
 	}
 
 	guessBuffer.WriteString(" ]")
-	fmt.Println(guessBuffer.String())
-	fmt.Println(carrotBuffer.String())
+	return guessBuffer.String() + "\n" + carrotBuffer.String()
 }
 
-func newLetterList() LetterList {
-	return LetterList{
-		Letter{pos: 0, match: ""},
-		Letter{pos: 1, match: ""},
-		Letter{pos: 2, match: ""},
-		Letter{pos: 3, match: ""},
-		Letter{pos: 4, match: ""},
-	}
-}
+//func newLetterList() LetterList {
+//	return LetterList{
+//		Letter{pos: 0, match: ""},
+//		Letter{pos: 1, match: ""},
+//		Letter{pos: 2, match: ""},
+//		Letter{pos: 3, match: ""},
+//		Letter{pos: 4, match: ""},
+//	}
+//}
 
-func updateLetterList(list LetterList, letter string, pos int, mode int) LetterList {
-	for key, _ := range list {
-		switch mode {
-		//match
-		case 1:
-			if key == pos {
-				list[key].match = letter
-			}
-		//include
-		case 2:
-			if key == pos {
-				list[key].exclude = append(list[key].exclude, letter)
-			}
-			if key != pos {
-				list[key].include = append(list[key].include, letter)
-			}
-		//exclude
-		case 3:
-			list[key].exclude = append(list[key].exclude, letter)
-		}
-	}
-
-	return LetterList{}
-}
+//func updateLetterList(list LetterList, letter string, pos int, mode int) LetterList {
+//	for key, _ := range list {
+//		switch mode {
+//		//match
+//		case 1:
+//			if key == pos {
+//				list[key].match = letter
+//			}
+//		//include
+//		case 2:
+//			if key == pos {
+//				list[key].exclude = append(list[key].exclude, letter)
+//			}
+//			if key != pos {
+//				list[key].include = append(list[key].include, letter)
+//			}
+//		//exclude
+//		case 3:
+//			list[key].exclude = append(list[key].exclude, letter)
+//		}
+//	}
+//
+//	return LetterList{}
+//}
 
 func printWordList(p PairList) {
 	i := 0
@@ -254,39 +252,40 @@ func printWordList(p PairList) {
 	}
 }
 
-func printLetterList(ll LetterList) {
-	i := 0
-	var match string
-	//maxIncludes := 0
-	//maxExcludes := 0
-	var out bytes.Buffer
-	out.WriteString("[ ")
-	for range ll {
-		fmt.Printf("Pos: %v Match: %s (%v)\n", ll[i].pos, ll[i].match)
-		//fmt.Println("includes: ")
-		//fmt.Println(ll[i].include)
-		//fmt.Println("excludes: ")
-		//fmt.Println(ll[i].exclude)
-		match = ll[i].match
-		if match != "" {
-			out.WriteString(match + " ")
-		} else {
-			out.WriteString("_ ")
-		}
-
-		i++
-	}
-	out.WriteString("]")
-	println(out.String())
-}
+//func printLetterList(ll LetterList) {
+//	i := 0
+//	var match string
+//	//maxIncludes := 0
+//	//maxExcludes := 0
+//	var out bytes.Buffer
+//	out.WriteString("[ ")
+//	for range ll {
+//		fmt.Printf("Pos: %v Match: %s (%v)\n", ll[i].pos, ll[i].match)
+//		//fmt.Println("includes: ")
+//		//fmt.Println(ll[i].include)
+//		//fmt.Println("excludes: ")
+//		//fmt.Println(ll[i].exclude)
+//		match = ll[i].match
+//		if match != "" {
+//			out.WriteString(match + " ")
+//		} else {
+//			out.WriteString("_ ")
+//		}
+//
+//		i++
+//	}
+//	out.WriteString("]")
+//	println(out.String())
+//}
 
 func main() {
 	info := countDictionary([]string{})
-	ll := newLetterList()
+	var output string
+	//ll := newLetterList()
 	text := info.text
 	answerSet := []int{}
 
-	reader := bufio.NewReader(os.Stdin)
+	//reader := bufio.NewReader(os.Stdin)
 	word := make(map[int]string)
 	word[0] = ""
 	word[1] = ""
@@ -312,7 +311,8 @@ func main() {
 
 		fmt.Println(colorBlue, "Make a guess: ", colorReset)
 		fmt.Print("-> ")
-		guess, _ := reader.ReadString('\n')
+		var guess string
+		fmt.Scan(&guess)
 		// convert CRLF to LF
 		guess = strings.ToLower(strings.Replace(guess, "\n", "", -1))
 		// Make a Regex to say we only want letters and numbers
@@ -327,15 +327,17 @@ func main() {
 		i := 0
 		for _, v := range guessLetters {
 			//fmt.Println(guessLetters)
-			fmt.Println(word)
-			printGuess(guessLetters, word, i)
-			fmt.Println(" 1 - match, 2 - include, 3 - exclude")
-			fmt.Print("-> ")
+			//fmt.Println(word)
+			output = printGuess(guessLetters, word, i)
+			output += "\n 1 - match, 2 - include, 3 - exclude"
+			output += "\n-> "
 
 			if word[i] == v {
-				fmt.Println(colorGreen, "we should be skipping this Letter", colorReset)
+				output += "\n" + colorGreen + "we should be skipping this Letter" + colorReset
+				fmt.Println(output)
 			} else {
 				var input int
+				fmt.Println(output)
 				fmt.Scan(&input)
 
 				switch input {
@@ -347,13 +349,14 @@ func main() {
 				case 3:
 					text = findExclude(text, v)
 				default:
-					fmt.Println("you suck, that wasn't a 1, 2 or a 3...start over")
+					output += "\nyou suck, that wasn't a 1, 2 or a 3...start over"
 				}
 
-				updateLetterList(ll, v, i, input)
+				//updateLetterList(ll, v, i, input)
 			}
 
 			fmt.Println("words remaining:", len(text))
+			output = ""
 			i++
 		}
 
@@ -361,7 +364,7 @@ func main() {
 		//fmt.Println(ll)
 		answerSet = append(answerSet, len(text))
 		fmt.Println(answerSet)
-		printLetterList(ll)
+		//printLetterList(ll)
 
 		info = countDictionary(text)
 		text = info.text
@@ -370,5 +373,6 @@ func main() {
 			fmt.Println("recommended guess:", info.wordList[0].Key, " (", info.wordList[0].Value, ")")
 			os.Exit(0)
 		}
+		guess = ""
 	}
 }

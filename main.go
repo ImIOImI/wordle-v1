@@ -310,7 +310,7 @@ func main() {
 		fmt.Println("---------------------")
 
 		fmt.Println(colorBlue, "Make a guess: ", colorReset)
-		fmt.Print("-> ")
+		fmt.Print("->")
 		var guess string
 		fmt.Scan(&guess)
 		// convert CRLF to LF
